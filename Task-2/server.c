@@ -19,7 +19,7 @@ int book_tickets(int client_socket)
     int server_records = open("server_records.txt", O_RDONLY);
 
     // Get the ticket available info
-
+    
     off_t pos = lseek(server_records, 0, SEEK_END) - 1;
     while (pos > 0)
     {
