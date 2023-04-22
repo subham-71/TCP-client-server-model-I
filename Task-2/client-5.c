@@ -39,7 +39,7 @@ void server_connection(int *client_socket, struct sockaddr_in *server_address)
 
 int parse_input(char *buffer)
 {
-    if (buffer[0] == 'c' && buffer[1] == 'l' && buffer[2] == 'i' && buffer[3] == 'e' && buffer[4] == 'n' && buffer[5] == 't' && buffer[6] == '-' && (buffer[7] < 6 || buffer[7] > 1) && buffer[8] == ':')
+    if (buffer[0] == 'c' && buffer[1] == 'l' && buffer[2] == 'i' && buffer[3] == 'e' && buffer[4] == 'n' && buffer[5] == 't' && buffer[6] == '-' && buffer[7] == '5' && buffer[8] == ':')
     {
 
         return 1;
@@ -64,7 +64,7 @@ int main()
 
         // User input
 
-        printf("=========================================================== \nEnter tickets in this format\n\nclient-A:B \n\nwhere \nA = client id \nB = number of tickets to be booked \n\nEnter QUIT to quit\n=========================================================== \n ");
+        printf("=========================================================== \nEnter tickets in this format\n\nclient-A:B \n\nwhere \nA = client id(5) \nB = number of tickets to be booked \n\nEnter QUIT to quit\n=========================================================== \n ");
 
         scanf("\n%[^\n]s", buffer);
 

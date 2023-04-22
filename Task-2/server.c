@@ -163,7 +163,7 @@ int handle_auth()
     }
     else
     {
-        printf("Authentication Successful !\n");
+        printf("Authentication Successful !\n===============================================================\n");
         return 0;
     }
 }

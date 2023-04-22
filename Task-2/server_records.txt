@@ -1,7 +1,1 @@
-[INFO] Tickets Available : 10000
-
-
-
-Client 2 booked : 23
-
-[INFO] Tickets Available : 9977
+[INFO] Tickets Available : 1000
