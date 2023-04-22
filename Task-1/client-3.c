@@ -48,7 +48,7 @@ int main()
     server_connection(&client_socket, &server_address);
    
     // Send a string message to the server
-    printf("Enter a string to send to the server \n ");
+    printf("Enter a string to send to the server \n");
     fgets(buffer, sizeof(buffer), stdin);
     send(client_socket, buffer, strlen(buffer), 0);
 

@@ -17,8 +17,9 @@ int book_tickets(int client_socket)
 {
 
     int server_records = open("server_records.txt", O_RDONLY);
- 
-    // Seek to the end of the file
+
+    // Get the ticket available info
+
     off_t pos = lseek(server_records, 0, SEEK_END) - 1;
     while (pos > 0)
     {
@@ -35,17 +36,12 @@ int book_tickets(int client_socket)
     }
 
     // Read the last line of the file
-    char line[1024];
-    int x = pread(server_records, line, 1024, pos);
-
-    if (x < 0)
-    {
-        printf("File is empty\n");
-    }
+    char last_line[1024];
+    int x = pread(server_records, last_line, 1024, pos);
 
     int tickets_available = 0;
 
-    char *position = strstr(line, ":");
+    char *position = strstr(last_line, ":");
     sscanf(position + 1, "%d", &tickets_available);
 
     char buffer[1024];
@@ -152,20 +148,21 @@ void server_socket_create(int *server_socket)
 
 int handle_auth()
 {
-    printf("Enter user_id : ") ;
+    printf("Enter user_id : ");
     char user_id[1024];
     scanf("%s", user_id);
 
-    printf("Enter password : ") ;
+    printf("Enter password : ");
     char password[1024];
     scanf("%s", password);
 
-    if(strcmp(user_id, "admin") != 0 || strcmp(password, "password") != 0)
+    if (strcmp(user_id, "admin") != 0 || strcmp(password, "password") != 0)
     {
         printf("Authentication Failed !\n");
         return -1;
     }
-    else{
+    else
+    {
         printf("Authentication Successful !\n");
         return 0;
     }
@@ -176,7 +173,8 @@ int main()
 
     while (1)
     {
-        if(handle_auth()==-1){
+        if (handle_auth() == -1)
+        {
             continue;
         }
 

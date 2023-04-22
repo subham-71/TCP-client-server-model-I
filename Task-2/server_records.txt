@@ -1,10 +1,23 @@
-Number of Tickets Left:1000
+[INFO] Tickets Available : 1000
 
 
-Client  1 booked : 200
 
-[INFO] Tickets Available : 800
+Client 1 booked : 366
 
-Client  3 booked : 34
+[INFO] Tickets Available : 634
 
-[INFO] Tickets Available : 766
+Client 3 booked : 45
+
+[INFO] Tickets Available : 589
+
+Client 4 booked : 234
+
+[INFO] Tickets Available : 355
+
+Client 5 booked : 90
+
+[INFO] Tickets Available : 265
+
+Client 2 booked : 89
+
+[INFO] Tickets Available : 176

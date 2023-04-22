@@ -18,7 +18,6 @@ void client_socket_init(int *client_socket)
         printf("Error: Failed to create socket\n");
         exit(EXIT_FAILURE);
     }
-
 }
 
 void server_connection(int *client_socket, struct sockaddr_in *server_address)
@@ -32,7 +31,8 @@ void server_connection(int *client_socket, struct sockaddr_in *server_address)
     {
         printf("Error: Failed to connect to server \n");
     }
-    else {
+    else
+    {
         printf("Connected to server \n");
     }
 }
@@ -46,9 +46,9 @@ int main()
     client_socket_init(&client_socket);
 
     server_connection(&client_socket, &server_address);
-   
+
     // Send a string message to the server
-    printf("Enter a string to send to the server \n ");
+    printf("Enter a string to send to the server \n");
     fgets(buffer, sizeof(buffer), stdin);
     send(client_socket, buffer, strlen(buffer), 0);
 
