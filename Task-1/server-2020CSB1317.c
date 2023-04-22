@@ -7,26 +7,36 @@
 #include <netinet/in.h>
 
 #define PORT 5555
-
+void reverse_string(char *str, int len)
+{
+    int i = 0, j = len - 1;
+    while (i < j)
+    {
+        char temp = str[i];
+        str[i] = str[j];
+        str[j] = temp;
+        i++;
+        j--;
+    }
+}
 void handle_client(int client_socket)
 {
     char buffer[1024];
-    int read_size;
+    int read_size = recv(client_socket, buffer, sizeof(buffer), 0);
 
     printf("[NEW CONNECTION] Client connected\n");
 
-    while ((read_size = recv(client_socket, buffer, sizeof(buffer), 0)) > 0)
+    while (read_size > 0)
     {
+
         // Reverse the string
-        for (int i = 0; i < read_size / 2; i++)
-        {
-            char temp = buffer[i];
-            buffer[i] = buffer[read_size - i - 1];
-            buffer[read_size - i - 1] = temp;
-        }
+        reverse_string(buffer, read_size);
 
         // Send the reversed string back to the client
         send(client_socket, buffer, read_size, 0);
+
+        // Check read_size
+        read_size = recv(client_socket, buffer, sizeof(buffer), 0);
     }
 
     // Close the client socket
