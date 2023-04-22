@@ -7,6 +7,7 @@
 #include <netinet/in.h>
 
 #define PORT 5555
+
 void reverse_string(char *str, int len)
 {
     int i = 0, j = len - 1;

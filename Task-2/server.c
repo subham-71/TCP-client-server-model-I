@@ -10,7 +10,6 @@
 #include <netinet/in.h>
 #include <pthread.h>
 
-
 #define PORT 5556
 
 int book_tickets(int client_socket)
@@ -28,14 +27,11 @@ int book_tickets(int client_socket)
     while (pos > 0)
     {
         lseek(server_records, pos, SEEK_SET);
+
         char ch;
-        if (read(server_records, &ch, 1) != 1)
-        {
-            perror("Failed to read file");
-            close(server_records);
-            exit(0);
-        }
-        if (ch == 'N')
+        read(server_records, &ch, 1);
+
+        if (ch == ']')
         {
             break;
         }
@@ -46,7 +42,7 @@ int book_tickets(int client_socket)
     char line[1024];
     int x = pread(server_records, line, 1024, pos);
 
-    if(x < 0)    
+    if (x < 0)
     {
         printf("File is empty\n");
     }
@@ -68,7 +64,7 @@ int book_tickets(int client_socket)
     {
 
         char *pos_1 = strstr(buffer, ":");
-        char *str = strstr(buffer, "t");
+        char *str = strstr(buffer, "-");
         client_id = str[1] - '0';
         sscanf(pos_1 + 1, "%d", &client_tickets);
     }
@@ -86,19 +82,20 @@ int book_tickets(int client_socket)
     {
 
         tickets_available = tickets_available - client_tickets;
-
-        strcpy(buffer, "Tickets Booked : %d  \nTickets Now Available : %d\n");
+        char client_message[1024];
+        sprintf(client_message, "Tickets Booked : %d  \nTickets Now Available : %d\n", client_tickets, tickets_available);
+        strcpy(buffer, client_message);
 
         int write_records = open("server_records.txt", O_WRONLY | O_APPEND);
         if (write_records != -1)
         {
 
             char booking_record[1024];
-            sprintf(booking_record, "Client  %d booked : %d\n", client_id, client_tickets);
+            sprintf(booking_record, "\nClient %d booked : %d\n", client_id, client_tickets);
             write(write_records, booking_record, strlen(booking_record));
 
             char tickets_available_now[1024];
-            sprintf(tickets_available_now, "Tickets Available : %d\n", tickets_available);
+            sprintf(tickets_available_now, "\n[INFO] Tickets Available : %d\n", tickets_available);
             write(write_records, tickets_available_now, strlen(tickets_available_now));
 
             close(write_records);
@@ -140,9 +137,7 @@ int handle_client(int client_socket)
     printf("[DISCONNECTED] Client disconnected\n");
     exit(0);
     return x;
-
 }
-
 
 int main()
 {
@@ -199,12 +194,12 @@ int main()
             pthread_mutex_lock(&mutex);
 
             int x = handle_client(client_socket);
-            if(x=-1){
+            if (x = -1)
+            {
                 continue;
             }
 
             pthread_mutex_unlock(&mutex);
-
         }
         else
         {

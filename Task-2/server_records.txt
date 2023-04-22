@@ -1,2 +1,10 @@
-Number of Tickets Left:1000Client  -3 booked : 50
-Tickets Available : 950
+Number of Tickets Left:1000
+
+
+Client  1 booked : 200
+
+[INFO] Tickets Available : 800
+
+Client  3 booked : 34
+
+[INFO] Tickets Available : 766

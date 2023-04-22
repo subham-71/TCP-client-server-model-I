@@ -51,18 +51,16 @@ int parse_input(char *buffer)
 }
 int main()
 {
-    int client_socket;
-    struct sockaddr_in server_address;
-    char buffer[1024];
-
-    client_socket_init(&client_socket);
-
-    server_connection(&client_socket, &server_address);
-
-    // Send data to the server
 
     while (1)
     {
+        int client_socket;
+        struct sockaddr_in server_address;
+        char buffer[1024];
+
+        client_socket_init(&client_socket);
+
+        server_connection(&client_socket, &server_address);
 
         // User input
 
@@ -111,16 +109,17 @@ int main()
             }
 
             // Printing the output and closing the connection
-            printf("Server: %s\n", buffer);
+            printf("%s\n", buffer);
         }
         else
         {
             printf("Invalid Input\n");
             continue;
         }
+
+        // Close client socket
+        close(client_socket);
     }
-    // Close client socket
-    close(client_socket);
 
     return 0;
 }
