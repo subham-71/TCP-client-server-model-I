@@ -7,6 +7,7 @@
 #include <netinet/in.h>
 
 #define PORT 5555
+#define IP "127.0.0.1"
 
 void reverse_string(char *str, int len)
 {
@@ -46,6 +47,21 @@ void handle_client(int client_socket)
     printf("[DISCONNECTED] Client disconnected\n");
 }
 
+void server_socket_create(int *server_socket)
+{
+
+    *server_socket = socket(AF_INET, SOCK_STREAM, 0);
+
+    // Create a server socket
+    *server_socket = socket(AF_INET, SOCK_STREAM, 0);
+
+    if (*server_socket == -1)
+    {
+        printf("Error: Failed to create socket\n");
+        exit(EXIT_FAILURE);
+    }
+}
+
 int main()
 {
     int server_socket, client_socket;
@@ -53,16 +69,11 @@ int main()
     int address_length = sizeof(server_address);
 
     // Create a server socket
-    server_socket = socket(AF_INET, SOCK_STREAM, 0);
-    if (server_socket == -1)
-    {
-        printf("Error: Failed to create socket\n");
-        exit(EXIT_FAILURE);
-    }
+    server_socket_create(&server_socket);
 
     // Bind the server socket to the port
     server_address.sin_family = AF_INET;
-    server_address.sin_addr.s_addr = INADDR_ANY;
+    server_address.sin_addr.s_addr = inet_addr(IP);
     server_address.sin_port = htons(PORT);
     if (bind(server_socket, (struct sockaddr *)&server_address, sizeof(server_address)) == -1)
     {

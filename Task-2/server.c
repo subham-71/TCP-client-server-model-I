@@ -11,17 +11,13 @@
 #include <pthread.h>
 
 #define PORT 5556
+#define IP "127.0.0.1"
 
 int book_tickets(int client_socket)
 {
 
     int server_records = open("server_records.txt", O_RDONLY);
-    if (server_records == -1)
-    {
-        perror("Failed to open file");
-        exit(0);
-    }
-
+ 
     // Seek to the end of the file
     off_t pos = lseek(server_records, 0, SEEK_END) - 1;
     while (pos > 0)
@@ -139,78 +135,115 @@ int handle_client(int client_socket)
     return x;
 }
 
-int main()
+void server_socket_create(int *server_socket)
 {
 
-    int server_socket, client_socket;
-    struct sockaddr_in server_address, client_address;
-    int address_length = sizeof(server_address);
+    *server_socket = socket(AF_INET, SOCK_STREAM, 0);
 
     // Create a server socket
-    server_socket = socket(AF_INET, SOCK_STREAM, 0);
+    *server_socket = socket(AF_INET, SOCK_STREAM, 0);
 
-    if (server_socket == -1)
+    if (*server_socket == -1)
     {
         printf("Error: Failed to create socket\n");
         exit(EXIT_FAILURE);
     }
+}
 
-    // Bind the server socket to the port
+int handle_auth()
+{
+    printf("Enter user_id : ") ;
+    char user_id[1024];
+    scanf("%s", user_id);
 
-    server_address.sin_family = AF_INET;
-    server_address.sin_addr.s_addr = INADDR_ANY; // Replace with the IP address of your server
-    server_address.sin_port = htons(PORT);
+    printf("Enter password : ") ;
+    char password[1024];
+    scanf("%s", password);
 
-    if (bind(server_socket, (struct sockaddr *)&server_address, sizeof(server_address)) == -1)
+    if(strcmp(user_id, "admin") != 0 || strcmp(password, "password") != 0)
     {
-        printf("Error: Failed to bind socket\n");
-        exit(EXIT_FAILURE);
+        printf("Authentication Failed !\n");
+        return -1;
     }
-
-    // Listen for incoming client connections
-    if (listen(server_socket, 5) == -1)
-    {
-        printf("Error: Failed to listen for connections\n");
-        exit(EXIT_FAILURE);
+    else{
+        printf("Authentication Successful !\n");
+        return 0;
     }
+}
 
-    printf("[LISTENING] Server is listening on port %d\n", PORT);
+int main()
+{
 
     while (1)
     {
-        // Accept an incoming client connection
-        client_socket = accept(server_socket, (struct sockaddr *)&client_address, (socklen_t *)&address_length);
-        if (client_socket == -1)
-        {
-            printf("Error: Failed to accept connection\n");
+        if(handle_auth()==-1){
             continue;
         }
 
-        // Create a new thread to handle the client connection
-        if (fork() == 0)
-        {
-            // This is the child process, handle the client connection
-            pthread_mutex_t mutex;
-            pthread_mutex_lock(&mutex);
+        int server_socket, client_socket;
+        struct sockaddr_in server_address, client_address;
+        int address_length = sizeof(server_address);
 
-            int x = handle_client(client_socket);
-            if (x = -1)
+        // Create a server socket
+        server_socket_create(&server_socket);
+
+        // Bind the server socket to the port
+
+        server_address.sin_family = AF_INET;
+        server_address.sin_addr.s_addr = inet_addr(IP);
+        server_address.sin_port = htons(PORT);
+
+        if (bind(server_socket, (struct sockaddr *)&server_address, sizeof(server_address)) == -1)
+        {
+            printf("Error: Failed to bind socket\n");
+            exit(EXIT_FAILURE);
+        }
+
+        // Listen for incoming client connections
+        if (listen(server_socket, 5) == -1)
+        {
+            printf("Error: Failed to listen for connections\n");
+            exit(EXIT_FAILURE);
+        }
+
+        printf("[LISTENING] Server is listening on port %d\n", PORT);
+
+        while (1)
+        {
+            // Accept an incoming client connection
+            client_socket = accept(server_socket, (struct sockaddr *)&client_address, (socklen_t *)&address_length);
+            if (client_socket == -1)
             {
+                printf("Error: Failed to accept connection\n");
                 continue;
             }
 
-            pthread_mutex_unlock(&mutex);
+            // Create a new thread to handle the client connection
+            if (fork() == 0)
+            {
+                // This is the child process, handle the client connection
+                pthread_mutex_t mutex;
+                pthread_mutex_lock(&mutex);
+
+                int x = handle_client(client_socket);
+                if (x = -1)
+                {
+                    continue;
+                }
+
+                pthread_mutex_unlock(&mutex);
+            }
+            else
+            {
+                // This is the parent process, close the client socket and continue listening for connections
+                close(client_socket);
+                continue;
+            }
         }
-        else
-        {
-            // This is the parent process, close the client socket and continue listening for connections
-            close(client_socket);
-            continue;
-        }
+
+        // Close the server socket
+        close(server_socket);
+
+        return 0;
     }
-
-    // Close the server socket
-    close(server_socket);
-
-    return 0;
 }
