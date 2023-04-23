@@ -38,7 +38,7 @@ To compile: gcc server.c -o server.out \
 To run: ./server.out 
 
 Enter the credentials : \
-User_id : admin 
+User_id : admin  \
 Password : password 
 
 ![image](https://user-images.githubusercontent.com/72215169/233819719-90b1867a-b107-43a5-b9a1-9c39d862a40d.png)
