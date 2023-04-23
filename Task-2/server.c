@@ -77,7 +77,7 @@ int book_tickets(int client_socket)
         char client_message[1024];
         sprintf(client_message, "Tickets Booked : %d  \nTickets Now Available : %d\n", client_tickets, tickets_available);
         strcpy(buffer, client_message);
-
+    
         int write_records = open("server_records.txt", O_WRONLY | O_APPEND);
         if (write_records != -1)
         {

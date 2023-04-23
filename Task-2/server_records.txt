@@ -1,1 +1,23 @@
 [INFO] Tickets Available : 1000
+
+
+
+Client 1 booked : 56
+
+[INFO] Tickets Available : 944
+
+Client 3 booked : 344
+
+[INFO] Tickets Available : 600
+
+Client 4 booked : 89
+
+[INFO] Tickets Available : 511
+
+Client 5 booked : 345
+
+[INFO] Tickets Available : 166
+
+Client 4 booked : 89
+
+[INFO] Tickets Available : 77

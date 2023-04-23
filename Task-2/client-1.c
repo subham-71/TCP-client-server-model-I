@@ -39,7 +39,7 @@ void server_connection(int *client_socket, struct sockaddr_in *server_address)
 
 int parse_input(char *buffer)
 {
-    if (buffer[0] == 'c' && buffer[1] == 'l' && buffer[2] == 'i' && buffer[3] == 'e' && buffer[4] == 'n' && buffer[5] == 't' && buffer[6] == '-' && buffer[7]=='1' && buffer[8] == ':')
+    if (buffer[0] == 'c' && buffer[1] == 'l' && buffer[2] == 'i' && buffer[3] == 'e' && buffer[4] == 'n' && buffer[5] == 't' && buffer[6] == '-' && buffer[7] == '1' && buffer[8] == ':')
     {
 
         return 1;
@@ -63,11 +63,11 @@ int main()
 
         server_connection(&client_socket, &server_address);
 
-
         // User input
 
-        printf("=========================================================== \nEnter tickets in this format\n\nclient-A:B \n\nwhere \nA = client id(1) \nB = number of tickets to be booked \n\nEnter QUIT to quit\n=========================================================== \n ");
+        printf("=========================================================== \nEnter number of tickets to be booked \n\nEnter QUIT to quit\n=========================================================== \n ");
 
+        printf("Input : ");
         scanf("\n%[^\n]s", buffer);
 
         if (strcmp(buffer, "QUIT") == 0)
@@ -75,11 +75,17 @@ int main()
             break;
         }
 
-        if (parse_input(buffer))
+        char client_message[1024];
+
+        sprintf(client_message, "client-1:");
+        strcat(client_message, buffer);
+
+        printf("Client message: %s\n", client_message);
+        if (parse_input(client_message))
         {
-            for (int i = 9; i < strlen(buffer); i++)
+            for (int i = 9; i < strlen(client_message); i++)
             {
-                if (buffer[i] < '0' || buffer[i] > '9')
+                if (client_message[i] < '0' || client_message[i] > '9')
                 {
                     printf("Invalid Input\n");
                     break;
@@ -88,7 +94,7 @@ int main()
 
             // Send data to the server
 
-            if (send(client_socket, buffer, strlen(buffer), 0) > 0)
+            if (send(client_socket, client_message, strlen(client_message), 0) > 0)
             {
                 printf("Data sent to the server \n");
             }
@@ -97,11 +103,11 @@ int main()
                 printf("Error: Failed to send data to server \n");
             }
 
-            bzero(buffer, 256);
+            bzero(client_message, 256);
 
             // Receive data from the server
 
-            if (recv(client_socket, buffer, 1024, 0) > 0)
+            if (recv(client_socket, client_message, 1024, 0) > 0)
             {
                 printf("Data received from the server: %s \n", buffer);
             }
@@ -111,7 +117,7 @@ int main()
             }
 
             // Printing the output and closing the connection
-            printf("%s\n", buffer);
+            printf("%s\n", client_message);
         }
         else
         {
@@ -122,7 +128,6 @@ int main()
         // Close client socket
         close(client_socket);
     }
-
 
     return 0;
 }

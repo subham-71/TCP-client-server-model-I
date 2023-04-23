@@ -64,8 +64,9 @@ int main()
 
         // User input
 
-        printf("=========================================================== \nEnter tickets in this format\n\nclient-A:B \n\nwhere \nA = client id(5) \nB = number of tickets to be booked \n\nEnter QUIT to quit\n=========================================================== \n ");
+        printf("=========================================================== \nEnter number of tickets to be booked \n\nEnter QUIT to quit\n=========================================================== \n ");
 
+        printf("Input : ");
         scanf("\n%[^\n]s", buffer);
 
         if (strcmp(buffer, "QUIT") == 0)
@@ -73,11 +74,17 @@ int main()
             break;
         }
 
-        if (parse_input(buffer))
+        char client_message[1024];
+
+        sprintf(client_message, "client-5:");
+        strcat(client_message, buffer);
+
+        printf("Client message: %s\n", client_message);
+        if (parse_input(client_message))
         {
-            for (int i = 9; i < strlen(buffer); i++)
+            for (int i = 9; i < strlen(client_message); i++)
             {
-                if (buffer[i] < '0' || buffer[i] > '9')
+                if (client_message[i] < '0' || client_message[i] > '9')
                 {
                     printf("Invalid Input\n");
                     break;
@@ -86,7 +93,7 @@ int main()
 
             // Send data to the server
 
-            if (send(client_socket, buffer, strlen(buffer), 0) > 0)
+            if (send(client_socket, client_message, strlen(client_message), 0) > 0)
             {
                 printf("Data sent to the server \n");
             }
@@ -95,11 +102,11 @@ int main()
                 printf("Error: Failed to send data to server \n");
             }
 
-            bzero(buffer, 256);
+            bzero(client_message, 256);
 
             // Receive data from the server
 
-            if (recv(client_socket, buffer, 1024, 0) > 0)
+            if (recv(client_socket, client_message, 1024, 0) > 0)
             {
                 printf("Data received from the server: %s \n", buffer);
             }
@@ -109,7 +116,7 @@ int main()
             }
 
             // Printing the output and closing the connection
-            printf("%s\n", buffer);
+            printf("%s\n", client_message);
         }
         else
         {
